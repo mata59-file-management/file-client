@@ -1,24 +1,62 @@
+
 import socket
-import os
 
-SEPARATOR = "<SEPARATOR>"
-BUFFER_SIZE = 4096 # send 4096 bytes each time step
+IP = socket.gethostbyname(socket.gethostname())
+PORT = 4455
+ADDRESS = (IP, PORT)
 
-# the ip address or hostname of the server, the receiver
-host = "127.0.0.1"
-# the port, let's use 5001
-port = 5001
-# the name of file we want to send, make sure it exists
-filename = "Prova1.pdf"
-# get the file size
-filesize = os.path.getsize(filename)
+SIZE = 1024
+FORMAT = "utf-8"
 
-# create the client socket
-s = socket.socket()
 
-print(f"[+] Connecting to {host}:{port}")
-s.connect((host, port))
-print("[+] Connected.")
+FILE_NAME = "yt.txt"  # File must be inside the data folder
+FAULT_TOLERANCE_LEVEL = "1"  # Number of copies to be made on different servers
 
-# send the filename and filesize
-s.send(f"{filename}{SEPARATOR}{filesize}".encode())
+
+def main():
+    """ Getting the filename and fault tolerance level from the user """
+    print("O arquivo deve estar armazenado dentro da pasta data")
+    print("Digite o nome do arquivo a ser enviado:")
+    file_name = input()
+    
+    print("Digite o nível de tolerância a falhas desejado:")
+    fault_tolerance_level = input()
+
+    """ Staring a TCP socket. """
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    """ Connecting to the server. """
+    client.connect(ADDRESS)
+
+    """ Opening and reading the file data. """
+    try:
+        file = open(f"data/{file_name}", "r")
+        data = file.read()
+
+        """ Sending the filename to the server. """
+        client.send(file_name.encode(FORMAT))
+        msg = client.recv(SIZE).decode(FORMAT)
+        print(f"[SERVER]: {msg}")
+
+        """ Sending the file data to the server. """
+        client.send(data.encode(FORMAT))
+        msg = client.recv(SIZE).decode(FORMAT)
+        print(f"[SERVER]: {msg}")
+
+        """ Sending the fault tolerance level to the server. """
+        client.send(fault_tolerance_level.encode(FORMAT))
+        msg = client.recv(SIZE).decode(FORMAT)
+        print(f"[SERVER]: {msg}")
+
+        """ Closing the file. """
+        file.close()
+
+    except FileNotFoundError:
+        print("Arquivo não existe na pasta data")
+
+    """ Closing the connection from the server. """
+    client.close()
+
+
+if __name__ == "__main__":
+    main()
