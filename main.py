@@ -1,23 +1,24 @@
 import socket
+import os
 
-HOST = '127.0.0.1'      # Endereco IP do Servidor
-PORT = 5000             # Porta que o Servidor está
+SEPARATOR = "<SEPARATOR>"
+BUFFER_SIZE = 4096 # send 4096 bytes each time step
 
-# Criando a conexão
-tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-destino = (HOST, PORT)
-tcp.connect(destino)
+# the ip address or hostname of the server, the receiver
+host = "127.0.0.1"
+# the port, let's use 5001
+port = 5001
+# the name of file we want to send, make sure it exists
+filename = "Prova1.pdf"
+# get the file size
+filesize = os.path.getsize(filename)
 
-print('\nDigite suas mensagens')
-print('Para sair use CTRL+X\n')
+# create the client socket
+s = socket.socket()
 
-# Recebendo a mensagem do usuário final pelo teclado
-mensagem = input()
+print(f"[+] Connecting to {host}:{port}")
+s.connect((host, port))
+print("[+] Connected.")
 
-# Enviando a mensagem para o Servidor TCP através da conexão
-while mensagem != '\x18':
-    tcp.send(str(mensagem).encode())
-    mensagem = input()
-
-# Fechando o Socket
-tcp.close()
+# send the filename and filesize
+s.send(f"{filename}{SEPARATOR}{filesize}".encode())
