@@ -1,4 +1,5 @@
 from deposit import deposit
+from retrieve import retrieve
 
 
 def main():
@@ -10,7 +11,9 @@ def main():
 
     if program_mode == "1":
         deposit()
-
+    elif program_mode == "2":
+        retrieve()
+        
 
 if __name__ == "__main__":
     main()

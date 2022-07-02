@@ -1,10 +1,10 @@
 import socket
 
-from constants import ADDRESS, FORMAT, SIZE
+from constants import ADDRESS, DEPOSIT_ID, FORMAT, SIZE, UPLOAD_FOLDER_NAME
 
 
 def deposit():
-    """ Getting the filename and fault tolerance level from the user """
+    # Getting the filename and fault tolerance level from the user
     print("O arquivo deve estar armazenado dentro da pasta data")
     print("Digite o nome do arquivo a ser enviado:")
     file_name = input()
@@ -12,18 +12,23 @@ def deposit():
     print("Digite o nível de tolerância a falhas desejado:")
     fault_tolerance_level = input()
 
-    """ Staring a TCP socket. """
+    # Starting a TCP socket
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    """ Connecting to the server. """
+    # Connecting to the main server
     client.connect(ADDRESS)
 
     try:
         """ Opening and reading the file data. """
-        file = open(f"data/{file_name}", "r")
+        file = open(f"{UPLOAD_FOLDER_NAME}/{file_name}", "r")
         data = file.read()
 
-        """ Sending the filename to the server. """
+        # Sending a identifier so that the server knows that it should perform a deposit
+        client.send(DEPOSIT_ID.encode(FORMAT))
+        msg = client.recv(SIZE).decode(FORMAT)
+        print(f"[SERVER]: {msg}")
+
+        # Sending the file name to the server
         client.send(file_name.encode(FORMAT))
         msg = client.recv(SIZE).decode(FORMAT)
         print(f"[SERVER]: {msg}")
