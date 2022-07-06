@@ -7,7 +7,7 @@ def deposit():
     # Getting the filename and fault tolerance level from the user
     file_name = ''
     while not file_name:
-        print("O arquivo deve estar armazenado dentro da pasta data")
+        print("O arquivo deve estar armazenado dentro da pasta uploads")
         print("Digite o nome do arquivo a ser enviado:")
         file_name = input()
 
