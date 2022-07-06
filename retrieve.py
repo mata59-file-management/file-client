@@ -35,7 +35,6 @@ def retrieve():
     if ack == "OK":
         # Receiving the file data from the server
         file_data = client.recv(SIZE)
-        # print(f"# File data: {file_data}#")
         client.send("File data received".encode(FORMAT))
 
         file = open(f"{DOWNLOAD_FOLDER_NAME}/{file_name}", "wb")

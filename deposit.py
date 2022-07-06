@@ -23,7 +23,7 @@ def deposit():
     client.connect(ADDRESS)
 
     try:
-        """ Opening and reading the file data. """
+        # Opening and reading the file data
         file = open(f"{UPLOAD_FOLDER_NAME}/{file_name}", "rb")
         data = file.read()
 
@@ -37,21 +37,21 @@ def deposit():
         msg = client.recv(SIZE).decode(FORMAT)
         print(f"[SERVER]: {msg}")
 
-        """ Sending the file data to the server. """
+        # Sending the file data to the server
         client.send(data) # Sending binary files, do not encode
         msg = client.recv(SIZE).decode(FORMAT)
         print(f"[SERVER]: {msg}")
 
-        """ Sending the fault tolerance level to the server. """
+        # Sending the fault tolerance level to the server
         client.send(fault_tolerance_level.encode(FORMAT))
         msg = client.recv(SIZE).decode(FORMAT)
         print(f"[SERVER]: {msg}")
 
-        """ Closing the file. """
+        # Closing the file
         file.close()
 
     except FileNotFoundError:
         print("Arquivo não existe na pasta data")
 
-    """ Closing the connection from the server. """
+    # Closing the connection from the server
     client.close()
